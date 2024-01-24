@@ -53,8 +53,6 @@
 
     <script>
 
-      var diagramUrl = 'https://cdn.statically.io/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn';
-
       // modeler instance
       var bpmnModeler = new BpmnJS({
         container: '#canvas',
@@ -83,64 +81,43 @@
 
       /**
        * Open diagram in our modeler instance.
-       *
-       * @param {String} bpmnXML diagram to display
        */
-      async function openDiagram(bpmnXML) {
+      async function openDiagram() {
+
+        // create a blank diagram
+        var blankDiagramXML = '<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn"><bpmn:process id="Process_1" isExecutable="false"><bpmn:startEvent id="StartEvent_1"/><bpmn:endEvent id="EndEvent_1"/><bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="EndEvent_1"/></bpmn:process></bpmn:definitions>';
 
         // import diagram
         try {
 
-          await bpmnModeler.importXML(bpmnXML);
+          await bpmnModeler.importXML(blankDiagramXML);
 
           // access modeler components
           var canvas = bpmnModeler.get('canvas');
           var overlays = bpmnModeler.get('overlays');
 
-
           // zoom to fit full viewport
           canvas.zoom('fit-viewport');
 
           // attach an overlay to a node
-          overlays.add('SCAN_OK', 'note', {
+          overlays.add('StartEvent_1', 'note', {
             position: {
               bottom: 0,
               right: 0
             },
-            html: '<div class="diagram-note">Mixed up the labels?</div>'
+            html: '<div class="diagram-note">Your note here</div>'
           });
-
-          // add marker
-          canvas.addMarker('SCAN_OK', 'needs-discussion');
         } catch (err) {
 
           console.error('could not import BPMN 2.0 diagram', err);
         }
       }
 
-
-      // load external diagram file via AJAX and open it
-      $.get(diagramUrl, openDiagram, 'text');
+      // open blank diagram
+      openDiagram();
 
       // wire save button
-      $('#save-button').click(exportDiagram);
+      document.getElementById('save-button').addEventListener('click', exportDiagram);
     </script>
-    <!--
-      Thanks for trying out our BPMN toolkit!
-
-      This example uses the pre-built distribution of the bpmn-js modeler.
-      Consider rolling your own distribution to have more flexibility
-      regarding which features to include.
-
-      Checkout our advanced examples section to learn more:
-      * https://github.com/bpmn-io/bpmn-js-examples#advanced
-
-      To get a bit broader overview over how bpmn-js works,
-      follow our walkthrough:
-      * https://bpmn.io/toolkit/bpmn-js/walkthrough/
-
-      Related starters:
-      * https://raw.githubusercontent.com/bpmn-io/bpmn-js-examples/starter/viewer.html
-    -->
   </body>
 </html>
